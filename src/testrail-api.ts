@@ -109,7 +109,31 @@ export class TestRailAPI {
 				throw new Error(`TestRail API error (${response.status}): ${errorText}`);
 			}
 
-			return (await response.json()) as T;
+			// For DELETE operations, TestRail may return empty response
+			if (endpoint.startsWith("delete_")) {
+				return undefined as T;
+			}
+
+			// Check if response has content before trying to parse JSON
+			const contentLength = response.headers.get("content-length");
+			if (contentLength === "0" || contentLength === null) {
+				return undefined as T;
+			}
+
+			const text = await response.text();
+			if (!text.trim()) {
+				return undefined as T;
+			}
+
+			try {
+				return JSON.parse(text) as T;
+			} catch (parseError) {
+				// If JSON parsing fails but response was successful, return undefined for void operations
+				if (text.trim() === "") {
+					return undefined as T;
+				}
+				throw parseError;
+			}
 		} catch (error) {
 			if (error instanceof Error) {
 				throw new Error(`TestRail API request failed: ${error.message}`);
@@ -162,6 +186,14 @@ export class TestRailAPI {
 	 */
 	async getPriorities(): Promise<Priority[]> {
 		return this.makeRequest<Priority[]>("get_priorities");
+	}
+
+	/**
+	 * Find priority by short_name (e.g., "3" for "3 - Must Test")
+	 */
+	async getPriorityByShortName(shortName: string): Promise<Priority | null> {
+		const priorities = await this.getPriorities();
+		return priorities.find((p) => p.short_name === shortName) || null;
 	}
 
 	/**
