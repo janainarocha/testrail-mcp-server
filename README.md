@@ -146,7 +146,7 @@ priority_id: 3
 #create_section suite_id: 3 name: "API Tests"
 ```
 
-## �️ Safety Features
+## 🛡️ Safety Features
 
 ### 🔍 Preview Before Creation (REQUIRED for Batch Operations)
 To prevent accidental creation of hundreds of test cases, this server includes safety features:
@@ -221,26 +221,12 @@ User: "Delete test case 123"
 - ✅ **Metadata discovery** - understand available fields and types
 - ✅ **Process in 2 steps** (Preview → Confirm)
 
-## �🛠️ Prerequisites
+## 🛠️ Prerequisites
 
 - **Node.js 18+** (for local installation)
 - **VS Code** with **GitHub Copilot** extension
 - **TestRail account** with API access
 - **TestRail API key**
-
-## 🤝 Team Sharing
-
-### For Quick Setup Users:
-Share the `mcp.json` configuration with team members. Each person just needs to:
-1. Update with their own credentials
-2. Restart VS Code
-3. Start using MCP commands directly
-
-### For Local Installation Users:
-1. Share the repository
-2. Each person clones and installs
-3. Everyone creates their own `.env` file
-4. Configure their VS Code `mcp.json`
 
 ## 🔍 Troubleshooting
 
@@ -341,7 +327,7 @@ User: "Create only test cases 1, 4, 7, and 15"
 AI: Creates only the selected 4 test cases
 ```
 
-### � **Advanced Search & Filtering**
+### 🔍 **Advanced Search & Filtering**
 ```
 User: "Find all high priority test cases created last week in project 5"
 AI: Uses advanced search with date and priority filters
@@ -371,7 +357,7 @@ User: "List all attachments for test case 456"
 AI: Shows files, sizes, upload dates, and users
 ```
 
-### �🛡️ **Safe Delete Process**
+### 🛡️ **Safe Delete Process**
 ```
 User: "I want to delete test case 123"
 AI: "Let me show you what will be deleted first..."
@@ -412,7 +398,7 @@ User: "Show me all active milestones for project 5"
 AI: Lists milestones filtered by completion status
 ```
 
-### � **Test Run Management**
+### 🏃 **Test Run Management**
 ```
 User: "Create a test run for Sprint 5 testing in project 2"
 AI: Creates test run with suite selection and milestone linking
