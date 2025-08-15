@@ -1,0 +1,48 @@
+{
+  "name": "@janainarocha/testrail-mcp-server",
+  "version": "1.0.0",
+  "description": "Complete TestRail MCP Server - 67 API methods, 39 MCP tools, enterprise-ready integration",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "testrail-mcp-server": "./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/janainarocha/testrail-mcp-server"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc && node dist/index.js",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "testrail",
+    "testing",
+    "ai",
+    "automation"
+  ],
+  "author": "Nina",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.3",
+    "dotenv": "^17.2.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
