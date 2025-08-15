@@ -31,7 +31,7 @@ Add this to your VS Code `mcp.json` file:
 }
 ```
 
-**That's it!** Restart VS Code and use `@testrail` commands.
+**That's it!** Restart VS Code and use MCP commands directly.
 
 ### Option 2: Local Installation
 
@@ -92,61 +92,57 @@ Replace `your.email@company.com` and `your-api-key` with your actual credentials
 
 **Step 1: Preview test cases (REQUIRED for batch)**
 ```
-@testrail preview 5 test cases for login functionality in project 1, section 10
+#preview_test_cases_batch for login functionality in project 1, section 10
 ```
 
 **Step 2: Create ALL previewed test cases**
 ```
-@testrail create all the previewed test cases after confirmation
+#create_test_cases_batch_confirmed
 ```
 
 **Step 2 Alternative: Create SELECTED test cases only**
 ```
-@testrail create only test cases 1, 3, and 5 from the preview
+#create_test_cases_batch_confirmed with selected_indexes: [1, 3, 5]
 ```
 
 ### 🚨 **SAFE DELETE: Always Preview Before Deleting**
 
 **Step 1: Preview what will be deleted**
 ```
-@testrail preview delete of test case 123
+#preview_delete_test_case case_id: 123
 ```
 
 **Step 2: Confirm deletion with reason**
 ```
-@testrail delete test case 123 - reason: duplicate test case
+#delete_test_case_confirmed case_id: 123 reason: "duplicate test case"
 ```
 
 ### Basic Operations
 
 ### List Projects
 ```
-@testrail list all projects
+#list_projects
 ```
 
 ### Create Individual Test Cases
 ```
-@testrail create a test case for user login:
-Title: Test successful user authentication
-Section ID: 5
-Steps:
-1. Navigate to login page
-2. Enter valid credentials
-3. Click login button
-Expected: User should be redirected to dashboard
-Priority: High
+#create_text_test_case
+title: "Test successful user authentication"
+section_id: 5
+expected_result: "User should be redirected to dashboard"
+priority_id: 3
 ```
 
 ### Explore Structure
 ```
-@testrail show me sections in project 1
-@testrail list test cases in section 12
-@testrail show details of test case 456
+#get_project project_id: 1
+#list_sections project_id: 1 suite_id: 2
+#get_test_case case_id: 456
 ```
 
 ### Create Sections
 ```
-@testrail create a new section called "API Tests" in suite 3
+#create_section suite_id: 3 name: "API Tests"
 ```
 
 ## �️ Safety Features
@@ -237,7 +233,7 @@ User: "Delete test case 123"
 Share the `mcp.json` configuration with team members. Each person just needs to:
 1. Update with their own credentials
 2. Restart VS Code
-3. Start using `@testrail` commands
+3. Start using MCP commands directly
 
 ### For Local Installation Users:
 1. Share the repository
@@ -259,7 +255,7 @@ Share the `mcp.json` configuration with team members. Each person just needs to:
 
 ### Commands Not Working
 - Ensure you're using GitHub Copilot Chat (not regular terminal)
-- Start commands with `@testrail`
+- Use MCP commands directly (e.g., `#list_projects`)
 - Check VS Code output logs for errors
 
 ## 📋 Complete Command Reference
@@ -267,63 +263,63 @@ Share the `mcp.json` configuration with team members. Each person just needs to:
 ### 👀 **Read Operations (Safe)**
 | Command | Description | Example |
 |---------|-------------|---------|
-| `list_projects` | List all accessible TestRail projects | `@testrail list all projects` |
-| `get_project` | Get project details with suites | `@testrail show project 5 details` |
-| `get_suites` | List test suites in a project | `@testrail list suites in project 3` |
-| `list_sections` | List sections in a suite | `@testrail show sections in suite 10` |
-| `list_test_cases` | List test cases in a section | `@testrail list test cases in section 12` |
-| `get_test_case` | Get detailed test case information | `@testrail show details of test case 456` |
-| `search_test_cases_advanced` | 🔍 Advanced search with filters | `@testrail search test cases with priority high in project 1` |
-| `get_project_milestones` | 🎯 Get milestones for project planning | `@testrail list milestones for project 3` |
-| `get_project_labels` | 🏷️ Get labels for test case organization | `@testrail show labels in project 5` |
-| `get_user_groups` | 👥 Get user groups and team structure | `@testrail list user groups` |
-| `get_test_runs` | 🏃 Get test runs for a project | `@testrail list test runs for project 2` |
-| `get_shared_steps` | 🔗 Get shared steps for reusable procedures | `@testrail show shared steps for project 1` |
-| `get_test_statuses` | 📊 Get test result statuses | `@testrail show available test statuses` |
-| `get_user_roles` | 👤 Get user roles and permissions | `@testrail list user roles` |
-| `get_case_metadata` | Get complete metadata for fields/types | `@testrail show metadata for project 2` |
-| `get_test_case_attachments` | 📎 Get attachments for a test case | `@testrail show attachments for case 789` |
-| `get_test_case_history` | 📜 Get change history and audit trail | `@testrail show history of test case 123` |
-| `get_test_case_history` | 📜 Get change history/audit trail | `@testrail show history of test case 123` |
-| `get_test_case_attachments` | 📎 List attachments for test case | `@testrail show attachments for test case 456` |
-| `get_case_metadata` | 📊 Get available types and custom fields | `@testrail show available case types and fields` |
+| `list_projects` | List all accessible TestRail projects | `#list_projects` |
+| `get_project` | Get project details with suites | `#get_project project_id: 5` |
+| `get_suites` | List test suites in a project | `#get_project project_id: 3` |
+| `list_sections` | List sections in a suite | `#list_sections project_id: 1 suite_id: 10` |
+| `list_test_cases` | List test cases in a section | `#list_test_cases project_id: 1 suite_id: 2 section_id: 12` |
+| `get_test_case` | Get detailed test case information | `#get_test_case case_id: 456` |
+| `search_test_cases_advanced` | 🔍 Advanced search with filters | `#search_test_cases_advanced project_id: 1 priority_ids: [3]` |
+| `get_project_milestones` | 🎯 Get milestones for project planning | `#get_project_milestones project_id: 3` |
+| `get_project_labels` | 🏷️ Get labels for test case organization | `#get_project_labels project_id: 5` |
+| `get_user_groups` | 👥 Get user groups and team structure | `#get_user_groups` |
+| `get_test_runs` | 🏃 Get test runs for a project | `#get_test_runs project_id: 2` |
+| `get_shared_steps` | 🔗 Get shared steps for reusable procedures | `#get_shared_steps project_id: 1` |
+| `get_test_statuses` | 📊 Get test result statuses | `#get_test_statuses` |
+| `get_user_roles` | 👤 Get user roles and permissions | `#get_user_roles` |
+| `get_case_metadata` | Get complete metadata for fields/types | `#get_case_metadata` |
+| `get_test_case_attachments` | 📎 Get attachments for a test case | `#get_test_case_attachments case_id: 789` |
+| `get_test_case_history` | 📜 Get change history and audit trail | `#get_test_case_history case_id: 123` |
+| `get_test_case_history` | 📜 Get change history/audit trail | `#get_test_case_history case_id: 123` |
+| `get_test_case_attachments` | 📎 List attachments for test case | `#get_test_case_attachments case_id: 456` |
+| `get_case_metadata` | 📊 Get available types and custom fields | `#get_case_metadata` |
 
 ### ➕ **Create Operations (Individual)**
 | Command | Description | Example |
 |---------|-------------|---------|
-| `create_section` | Create new organizational section | `@testrail create section "API Tests" in suite 3` |
-| `create_text_test_case` | Create simple text-based test case | `@testrail create text test case for login validation` |
-| `create_steps_test_case` | Create test case with structured steps | `@testrail create steps test case for user registration` |
-| `create_exploratory_test_case` | Create exploratory test case | `@testrail create exploratory test for mobile app` |
+| `create_section` | Create new organizational section | `#create_section suite_id: 3 name: "API Tests"` |
+| `create_text_test_case` | Create simple text-based test case | `#create_text_test_case title: "Login validation" section_id: 5` |
+| `create_steps_test_case` | Create test case with structured steps | `#create_steps_test_case title: "User registration" section_id: 5` |
+| `create_exploratory_test_case` | Create exploratory test case | `#create_exploratory_test_case title: "Mobile app exploration" section_id: 5` |
 
 ### 🔍 **Preview Operations (Safety First)**
 | Command | Description | Example |
 |---------|-------------|---------|
-| `preview_test_cases_batch` | Preview multiple test cases before creation | `@testrail preview 10 test cases for checkout flow` |
-| `preview_delete_test_case` | Preview what will be deleted | `@testrail preview delete of test case 123` |
-| `preview_delete_milestone` | 🎯 Preview milestone deletion impact | `@testrail preview delete milestone 15` |
+| `preview_test_cases_batch` | Preview multiple test cases before creation | `#preview 10 test cases for checkout flow |
+| `preview_delete_test_case` | Preview what will be deleted | `#preview delete of test case 123 |
+| `preview_delete_milestone` | 🎯 Preview milestone deletion impact | `#preview delete milestone 15 |
 
 ### ✅ **Confirmed Operations (Requires Preview)**
 | Command | Description | Example |
 |---------|-------------|---------|
-| `create_test_cases_batch_confirmed` | Create multiple test cases after preview | `@testrail create the previewed test cases 1, 4, and 10` |
-| `create_milestone` | 🎯 Create project milestone for planning | `@testrail create milestone "Release 2.0" for project 3 due 2024-12-31` |
-| `create_test_run` | 🚀 Create new test run for execution | `@testrail create test run "Sprint 5 Testing" for project 2 suite 10` |
-| `create_test_suite` | 📁 Create new test suite for organization | `@testrail create suite "API Tests" for project 1` |
-| `update_milestone_status` | 🎯 Update milestone status/details | `@testrail mark milestone 10 as completed` |
+| `create_test_cases_batch_confirmed` | Create multiple test cases after preview | `#create the previewed test cases 1, 4, and 10 |
+| `create_milestone` | 🎯 Create project milestone for planning | `#create milestone "Release 2.0" for project 3 due 2024-12-31 |
+| `create_test_run` | 🚀 Create new test run for execution | `#create test run "Sprint 5 Testing" for project 2 suite 10 |
+| `create_test_suite` | 📁 Create new test suite for organization | `#create suite "API Tests" for project 1 |
+| `update_milestone_status` | 🎯 Update milestone status/details | `#mark milestone 10 as completed |
 
 ### 🔄 **Batch Operations (Advanced)**
 | Command | Description | Example |
 |---------|-------------|---------|
-| `copy_test_cases` | Copy test cases to another section | `@testrail copy test cases 1,2,3 to section 15` |
-| `move_test_cases` | Move test cases to another section/suite | `@testrail move test cases 4,5,6 to section 20 suite 3` |
-| `update_test_cases_batch` | Update multiple cases with same values | `@testrail set priority high for test cases 10,11,12` |
+| `copy_test_cases` | Copy test cases to another section | `#copy test cases 1,2,3 to section 15 |
+| `move_test_cases` | Move test cases to another section/suite | `#move test cases 4,5,6 to section 20 suite 3 |
+| `update_test_cases_batch` | Update multiple cases with same values | `#set priority high for test cases 10,11,12 |
 
 ### 🚨 **Delete Operations (Critical - Irreversible)**
 | Command | Description | Example |
 |---------|-------------|---------|
-| `delete_test_case_confirmed` | Delete test case permanently | `@testrail delete test case 456 - duplicate case` |
-| `delete_milestone_confirmed` | 🎯 Delete milestone permanently | `@testrail delete milestone 15 reason "Project cancelled"` |
+| `delete_test_case_confirmed` | Delete test case permanently | `#delete test case 456 - duplicate case |
+| `delete_milestone_confirmed` | 🎯 Delete milestone permanently | `#delete milestone 15 reason "Project cancelled" |
 
 ### 🛡️ Safety Levels:
 - **👀 Read**: No changes to TestRail
