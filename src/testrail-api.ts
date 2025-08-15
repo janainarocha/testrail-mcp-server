@@ -193,9 +193,6 @@ export class TestRailAPI {
 	 * Create a new test case
 	 */
 	async addCase(sectionId: number, testCase: Omit<TestCase, "id" | "section_id">): Promise<TestCase> {
-		console.log('DEBUG addCase - sectionId:', sectionId);
-		console.log('DEBUG addCase - testCase:', JSON.stringify(testCase, null, 2));
-		
 		return this.makeRequest<TestCase>(`add_case/${sectionId}`, {
 			method: "POST",
 			body: JSON.stringify(testCase),

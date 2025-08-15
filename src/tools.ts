@@ -86,11 +86,6 @@ export function registerTools(server: McpServer, api: TestRailAPI) {
 				const project = await api.getProject(project_id);
 				const suitesResponse = await api.getSuites(project_id);
 
-				// Debug logging
-				console.log("Suites response:", suitesResponse);
-				console.log("Type of suites:", typeof suitesResponse);
-				console.log("Is array:", Array.isArray(suitesResponse));
-
 				// Ensure suites is an array
 				const suitesArray = Array.isArray(suitesResponse) ? suitesResponse : [];
 
@@ -270,7 +265,7 @@ export function registerTools(server: McpServer, api: TestRailAPI) {
 			};
 
 			// Remove any undefined fields
-			Object.keys(testCase).forEach(key => {
+			Object.keys(testCase).forEach((key) => {
 				if (testCase[key] === undefined) {
 					delete testCase[key];
 				}

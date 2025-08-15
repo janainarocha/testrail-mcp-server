@@ -2,7 +2,7 @@
 
 A comprehensive Model Context Protocol (MCP) server that enables AI assistants to interact with TestRail for automated test case management and execution. This server provides **complete TestRail REST API v2 coverage** with 39 MCP tools organized by safety levels.
 
-## � Complete TestRail Platform Coverage
+## Complete TestRail Platform Coverage
 
 This MCP server provides **100% coverage** of the TestRail platform with **67 API methods** and **39 MCP tools** across all major TestRail functionality:
 
@@ -18,7 +18,8 @@ Add this to your VS Code `mcp.json` file:
     "testrail": {
       "command": "npx",
       "args": [
-        "github:janainarocha/testrail-mcp-server"
+        "-y",
+        "github:janainarocha/testrail-mcp-server#v0.1.0-alpha"
       ],
       "type": "stdio",
       "env": {
