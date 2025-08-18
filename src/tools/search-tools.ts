@@ -1,17 +1,26 @@
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { TestRailAPI } from "../testrail-api.js";
+import { TestRailCasesAPI, TestRailPrioritiesAPI, TestRailCaseFieldsAPI, TestRailCaseTypesAPI, TestRailStatusesAPI } from "../api/index.js";
 
 /**
  * Search and Metadata Tools
  * These tools handle searching, filtering, and retrieving metadata about TestRail entities.
  */
-export function registerSearchTools(server: McpServer, api: TestRailAPI) {
+export function registerSearchTools(
+	server: McpServer,
+	clients: {
+		cases: TestRailCasesAPI;
+		priorities: TestRailPrioritiesAPI;
+		caseFields: TestRailCaseFieldsAPI;
+		caseTypes: TestRailCaseTypesAPI;
+		statuses: TestRailStatusesAPI;
+	}
+) {
 	/**
 	 * Advanced search for test cases with filters
 	 */
 	server.registerTool(
-		"search_test_cases_advanced",
+		"testrail_search_test_cases_advanced",
 		{
 			description: "🔍 Advanced search for test cases with multiple filters (priority, type, date, text search)",
 			inputSchema: {
@@ -43,7 +52,7 @@ export function registerSearchTools(server: McpServer, api: TestRailAPI) {
 				options.createdBefore = new Date(created_before);
 			}
 
-			const cases = await api.getCasesAdvanced(project_id, options);
+			const cases = await clients.cases.getCasesAdvanced(project_id, options);
 
 			return {
 				content: [
@@ -63,7 +72,7 @@ export function registerSearchTools(server: McpServer, api: TestRailAPI) {
 							`\n**Found ${cases.length} test cases:**\n\n` +
 							cases
 								.slice(0, limit)
-								.map((tc) => `📋 **${tc.title}** (ID: ${tc.id})\n` + `   Section: ${tc.section_id} | Priority: ${tc.priority_id === 1 ? "Low" : tc.priority_id === 2 ? "Medium" : tc.priority_id === 3 ? "High" : "Critical"} | Type: ${tc.type_id}\n`)
+								.map((tc: any) => `📋 **${tc.title}** (ID: ${tc.id})\n` + `   Section: ${tc.section_id} | Priority: ${tc.priority_id === 1 ? "Low" : tc.priority_id === 2 ? "Medium" : tc.priority_id === 3 ? "High" : "Critical"} | Type: ${tc.type_id}\n`)
 								.join("\n\n") +
 							`${cases.length > limit ? `\n\n... and ${cases.length - limit} more results` : ""}`,
 					},
@@ -76,7 +85,7 @@ export function registerSearchTools(server: McpServer, api: TestRailAPI) {
 	 * Get test case history/audit trail
 	 */
 	server.registerTool(
-		"get_test_case_history",
+		"testrail_get_test_case_history",
 		{
 			description: "📜 Get change history and audit trail for a test case - shows who changed what and when",
 			inputSchema: {
@@ -86,7 +95,7 @@ export function registerSearchTools(server: McpServer, api: TestRailAPI) {
 		},
 		async ({ case_id, limit = 10 }) => {
 			try {
-				const history = await api.getCaseHistory(case_id, limit);
+				const history = await clients.cases.getCaseHistory(case_id, limit);
 
 				return {
 					content: [
@@ -124,13 +133,13 @@ export function registerSearchTools(server: McpServer, api: TestRailAPI) {
 	 * Get metadata for test case creation
 	 */
 	server.registerTool(
-		"get_case_metadata",
+		"testrail_get_case_metadata",
 		{
 			description: "📊 Get available case types, priorities, and custom fields for better test case creation",
 		},
 		async () => {
 			try {
-				const [caseTypes, priorities, caseFields] = await Promise.all([api.getCaseTypes(), api.getPriorities(), api.getCaseFields()]);
+				const [caseTypes, priorities, caseFields] = await Promise.all([clients.caseTypes.getCaseTypes(), clients.priorities.getPriorities(), clients.caseFields.getCaseFields()]);
 
 				return {
 					content: [
@@ -139,13 +148,13 @@ export function registerSearchTools(server: McpServer, api: TestRailAPI) {
 							text:
 								`# 📊 TestRail Metadata\n\n` +
 								`## Case Types\n` +
-								caseTypes.map((type) => `- **${type.name}** (ID: ${type.id}): ${type.is_default ? "✅ Default" : ""}`).join("\n") +
+								caseTypes.map((type: any) => `- **${type.name}** (ID: ${type.id}): ${type.is_default ? "✅ Default" : ""}`).join("\n") +
 								`\n\n## Priorities\n` +
-								priorities.map((priority) => `- **${priority.name}** (ID: ${priority.id}): ${priority.is_default ? "✅ Default" : ""}`).join("\n") +
+								priorities.map((priority: any) => `- **${priority.name}** (ID: ${priority.id}): ${priority.is_default ? "✅ Default" : ""}`).join("\n") +
 								`\n\n## Custom Fields\n` +
 								caseFields
 									.slice(0, 10)
-									.map((field) => `- **${field.label}** (${field.name}): ${field.type_id === 1 ? "String" : field.type_id === 2 ? "Integer" : field.type_id === 3 ? "Text" : "Other"}`)
+									.map((field: any) => `- **${field.label}** (${field.name}): ${field.type_id === 1 ? "String" : field.type_id === 2 ? "Integer" : field.type_id === 3 ? "Text" : "Other"}`)
 									.join("\n") +
 								`${caseFields.length > 10 ? `\n... and ${caseFields.length - 10} more fields` : ""}` +
 								`\n\n💡 **Usage:** Use these IDs when creating test cases to ensure compatibility.`,
@@ -169,13 +178,13 @@ export function registerSearchTools(server: McpServer, api: TestRailAPI) {
 	 * Get test result statuses
 	 */
 	server.registerTool(
-		"get_test_statuses",
+		"testrail_get_test_statuses",
 		{
 			description: "📊 Get available test result statuses - understand status options for test execution",
 		},
 		async () => {
 			try {
-				const statuses = await api.getStatuses();
+				const statuses = await clients.statuses.getStatuses();
 
 				return {
 					content: [

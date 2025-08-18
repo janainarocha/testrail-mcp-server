@@ -4,8 +4,8 @@ import dotenv from "dotenv";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { TestRailAPI } from "./testrail-api.js";
 import { registerTools } from "./tools/index.js";
+import { TestRailCasesAPI, TestRailPlansAPI, TestRailLabelsAPI, TestRailProjectsAPI, TestRailMilestonesAPI, TestRailSectionsAPI, TestRailSuitesAPI, TestRailPrioritiesAPI, TestRailCaseFieldsAPI, TestRailCaseTypesAPI, TestRailStatusesAPI } from "./api/index.js";
 
 // Load environment variables from .env file (if exists)
 dotenv.config();
@@ -66,12 +66,27 @@ async function main() {
 	// Validate configuration
 	const config = validateConfig();
 
-	// Initialize TestRail API client
-	const testRailAPI = new TestRailAPI({
+	// Mapeia para o tipo esperado pelos clientes
+	const testRailConfig = {
 		baseUrl: config.TESTRAIL_URL,
 		username: config.TESTRAIL_USER,
 		apiKey: config.TESTRAIL_API_KEY,
-	});
+	};
+
+	// Inicializa os clientes splitados
+	const testRailClients = {
+		cases: new TestRailCasesAPI(testRailConfig),
+		labels: new TestRailLabelsAPI(testRailConfig),
+		projects: new TestRailProjectsAPI(testRailConfig),
+		milestones: new TestRailMilestonesAPI(testRailConfig),
+		plans: new TestRailPlansAPI(testRailConfig),
+		sections: new TestRailSectionsAPI(testRailConfig),
+		suites: new TestRailSuitesAPI(testRailConfig),
+		priorities: new TestRailPrioritiesAPI(testRailConfig),
+		caseFields: new TestRailCaseFieldsAPI(testRailConfig),
+		caseTypes: new TestRailCaseTypesAPI(testRailConfig),
+		statuses: new TestRailStatusesAPI(testRailConfig),
+	};
 
 	// Create MCP server instance
 	const server = new McpServer({
@@ -82,8 +97,8 @@ async function main() {
 		},
 	});
 
-	// Register all tools
-	registerTools(server, testRailAPI);
+	// Register all tools (agora recebe todos os clientes)
+	registerTools(server, testRailClients);
 
 	// Setup transport and start server
 	const transport = new StdioServerTransport();

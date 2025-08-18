@@ -1,22 +1,31 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { TestRailAPI } from "../testrail-api.js";
+import { TestRailProjectsAPI, TestRailSuitesAPI, TestRailSectionsAPI, TestRailMilestonesAPI, TestRailPrioritiesAPI } from "../api/index.js";
 
 /**
  * Register project-related MCP tools
  */
-export function registerProjectTools(server: McpServer, api: TestRailAPI) {
+export function registerProjectTools(
+	server: McpServer,
+	clients: {
+		projects: TestRailProjectsAPI;
+		suites: TestRailSuitesAPI;
+		sections: TestRailSectionsAPI;
+		milestones: TestRailMilestonesAPI;
+		priorities: TestRailPrioritiesAPI;
+	}
+) {
 	/**
 	 * List all projects
 	 */
 	server.registerTool(
-		"list_projects",
+		"testrail_list_projects",
 		{
 			description: "Get a list of all TestRail projects accessible to the authenticated user",
 		},
 		async () => {
 			try {
-				const projectsResponse = await api.getProjects();
+				const projectsResponse = await clients.projects.getProjects();
 
 				// Ensure projects is always an array
 				const projects = Array.isArray(projectsResponse) ? projectsResponse : [];
@@ -77,7 +86,7 @@ export function registerProjectTools(server: McpServer, api: TestRailAPI) {
 	 * Get project details
 	 */
 	server.registerTool(
-		"get_project",
+		"testrail_get_project",
 		{
 			description: "Get detailed information about a specific TestRail project including its test suites",
 			inputSchema: {
@@ -86,8 +95,8 @@ export function registerProjectTools(server: McpServer, api: TestRailAPI) {
 		},
 		async ({ project_id }) => {
 			try {
-				const project = await api.getProject(project_id);
-				const suitesResponse = await api.getSuites(project_id);
+				const project = await clients.projects.getProject(project_id);
+				const suitesResponse = await clients.suites.getSuites(project_id);
 
 				// Ensure suites is an array
 				const suitesArray = Array.isArray(suitesResponse) ? suitesResponse : [];
@@ -119,7 +128,7 @@ export function registerProjectTools(server: McpServer, api: TestRailAPI) {
 	 * List sections in a suite
 	 */
 	server.registerTool(
-		"list_sections",
+		"testrail_list_sections",
 		{
 			description: "Get all sections in a TestRail test suite",
 			inputSchema: {
@@ -129,7 +138,7 @@ export function registerProjectTools(server: McpServer, api: TestRailAPI) {
 		},
 		async ({ project_id, suite_id }) => {
 			try {
-				const sections = await api.getSections(project_id, suite_id);
+				const sections = await clients.sections.getSections(project_id, suite_id);
 
 				if (sections.length === 0) {
 					return {
@@ -183,13 +192,13 @@ export function registerProjectTools(server: McpServer, api: TestRailAPI) {
 	 * Get all priorities
 	 */
 	server.registerTool(
-		"get_priorities",
+		"testrail_get_priorities",
 		{
 			description: "📊 Get all available test case priorities from TestRail with their IDs and names",
 		},
 		async () => {
 			try {
-				const priorities = await api.getPriorities();
+				const priorities = await clients.priorities.getPriorities();
 
 				if (priorities.length === 0) {
 					return {
@@ -203,10 +212,10 @@ export function registerProjectTools(server: McpServer, api: TestRailAPI) {
 				}
 
 				// Sort priorities by ID for consistent display
-				const sortedPriorities = priorities.sort((a, b) => a.id - b.id);
+				const sortedPriorities = priorities.sort((a: any, b: any) => a.id - b.id);
 
 				const priorityList = sortedPriorities
-					.map((priority) => {
+					.map((priority: any) => {
 						const shortName = priority.short_name ? ` (Short: "${priority.short_name}")` : "";
 						const isDefault = priority.is_default ? " ✅ Default" : "";
 						return `- **${priority.name}** (ID: ${priority.id})${shortName}${isDefault}`;
@@ -238,7 +247,7 @@ export function registerProjectTools(server: McpServer, api: TestRailAPI) {
 	 * Get available templates for a project
 	 */
 	server.registerTool(
-		"get_templates",
+		"testrail_get_templates",
 		{
 			description: "📐 Get available templates for a project - understand template options for better test case creation",
 			inputSchema: {
@@ -247,7 +256,7 @@ export function registerProjectTools(server: McpServer, api: TestRailAPI) {
 		},
 		async ({ project_id }) => {
 			try {
-				const templates = await api.getTemplates(project_id);
+				const templates = await clients.projects.getTemplates(project_id);
 
 				if (!templates || templates.length === 0) {
 					return {
