@@ -7,6 +7,19 @@ import { registerSearchTools } from "./search-tools.js";
 import { registerLabelTools } from "./label-tools.js";
 import { registerMilestoneTools } from "./milestones-tools.js";
 import { registerPlanTools } from "./plan-tools.js";
+import { registerConfigTools } from "./config-tools.js";
+import { registerReportTools } from "./report-tools.js";
+import { registerResultTools } from "./results-tools.js";
+import { registerRunTools } from "./runs-tools.js";
+import { registerSectionTools } from "./sections-tools.js";
+import { registerSharedStepTools } from "./sharedSteps-tools.js";
+import { registerStatusTools } from "./statuses-tools.js";
+import { registerSuiteTools } from "./suites-tools.js";
+import { registerTemplateTools } from "./templates-tools.js";
+import { registerTestTools } from "./tests-tools.js";
+import { registerVariableTools } from "./variables-tools.js";
+import { registerHealthTools } from "./health-tools.js";
+import { registerBulkTools } from "./bulk-tools.js";
 
 /**
  * Register all MCP tools for TestRail operations
@@ -20,14 +33,19 @@ export function registerTools(server: McpServer, clients: any) {
 	registerLabelTools(server, clients);
 	registerMilestoneTools(server, clients);
 	registerPlanTools(server, clients);
+	registerConfigTools(server, clients);
+	registerReportTools(server, clients);
+	registerResultTools(server, clients);
+	registerRunTools(server, clients);
+	registerSectionTools(server, clients);
+	registerSharedStepTools(server, clients);
+	registerStatusTools(server, clients);
+	registerSuiteTools(server, clients);
+	registerTemplateTools(server, clients);
+	registerTestTools(server, clients);
+	registerVariableTools(server, clients);
+	registerHealthTools(server, clients);
+	registerBulkTools(server, clients);
 
 	console.log("✅ All TestRail MCP tools registered successfully");
-	console.log("📊 Modules loaded:");
-	console.log("   - Project management tools");
-	console.log("   - Individual test case creation and management tools");
-	console.log("   - Batch operations and preview tools");
-	console.log("   - Search and metadata tools");
-	console.log("   - Label management tools");
-	console.log("   - Milestone management tools");
-	console.log("   - Plan management tools");
 }

@@ -36,48 +36,62 @@ export function registerSearchTools(
 			},
 		},
 		async ({ project_id, suite_id, section_id, filter_text, priority_ids, type_ids, created_after, created_before, limit = 50 }) => {
-			const options: any = {
-				suiteId: suite_id,
-				sectionId: section_id,
-				filter: filter_text,
-				priorityIds: priority_ids,
-				typeIds: type_ids,
-				limit,
-			};
+			try {
+				const options: any = {
+					suiteId: suite_id,
+					sectionId: section_id,
+					filter: filter_text,
+					priorityIds: priority_ids,
+					typeIds: type_ids,
+					limit,
+				};
 
-			if (created_after) {
-				options.createdAfter = new Date(created_after);
-			}
-			if (created_before) {
-				options.createdBefore = new Date(created_before);
-			}
+				if (created_after) {
+					options.createdAfter = new Date(created_after);
+				}
+				if (created_before) {
+					options.createdBefore = new Date(created_before);
+				}
 
-			const cases = await clients.cases.getCasesAdvanced(project_id, options);
+				const cases = await clients.cases.getCasesAdvanced(project_id, options);
 
-			return {
-				content: [
-					{
-						type: "text",
-						text:
-							`# 🔍 Advanced Search Results\n\n` +
-							`**Search Parameters:**\n` +
-							`- Project: ${project_id}\n` +
-							`${suite_id ? `- Suite: ${suite_id}\n` : ""}` +
-							`${section_id ? `- Section: ${section_id}\n` : ""}` +
-							`${filter_text ? `- Text Filter: "${filter_text}"\n` : ""}` +
-							`${priority_ids?.length ? `- Priorities: ${priority_ids.join(", ")}\n` : ""}` +
-							`${type_ids?.length ? `- Types: ${type_ids.join(", ")}\n` : ""}` +
-							`${created_after ? `- Created After: ${created_after}\n` : ""}` +
-							`${created_before ? `- Created Before: ${created_before}\n` : ""}` +
-							`\n**Found ${cases.length} test cases:**\n\n` +
-							cases
-								.slice(0, limit)
-								.map((tc: any) => `📋 **${tc.title}** (ID: ${tc.id})\n` + `   Section: ${tc.section_id} | Priority: ${tc.priority_id === 1 ? "Low" : tc.priority_id === 2 ? "Medium" : tc.priority_id === 3 ? "High" : "Critical"} | Type: ${tc.type_id}\n`)
-								.join("\n\n") +
-							`${cases.length > limit ? `\n\n... and ${cases.length - limit} more results` : ""}`,
+				const result = {
+					search_parameters: {
+						project_id,
+						suite_id,
+						section_id,
+						filter_text,
+						priority_ids,
+						type_ids,
+						created_after,
+						created_before,
+						limit
 					},
-				],
-			};
+					total_found: cases.length,
+					test_cases: cases.slice(0, limit)
+				};
+
+				return {
+					content: [
+						{
+							type: "text",
+							text: JSON.stringify(result, null, 2)
+						}
+					]
+				};
+			} catch (error) {
+				return {
+					content: [
+						{
+							type: "text",
+							text: JSON.stringify({
+								error: error instanceof Error ? error.message : "Unknown error",
+								details: "Failed to search test cases"
+							}, null, 2)
+						}
+					]
+				};
+			}
 		}
 	);
 
@@ -97,33 +111,41 @@ export function registerSearchTools(
 			try {
 				const history = await clients.cases.getCaseHistory(case_id, limit);
 
+				const result = {
+					case_id,
+					total_changes: history.length,
+					history: history.map((entry) => ({
+						change_date: new Date(entry.created_on * 1000).toISOString(),
+						user_id: entry.user_id,
+						changes: entry.changes.map((change: any) => ({
+							field: change.field,
+							label: change.label,
+							old_value: change.old_text || change.old_value,
+							new_value: change.new_text || change.new_value
+						}))
+					}))
+				};
+
 				return {
 					content: [
 						{
 							type: "text",
-							text:
-								`# 📜 Test Case History - ID: ${case_id}\n\n` +
-								`**${history.length} changes found:**\n\n` +
-								history
-									.map((entry) => {
-										const changeDate = new Date(entry.created_on * 1000).toLocaleString();
-										const changes = entry.changes.map((change: any) => `   - **${change.label || change.field}**: "${change.old_text || change.old_value}" → "${change.new_text || change.new_value}"`).join("\n");
-
-										return `## Change on ${changeDate}\n` + `**User ID:** ${entry.user_id}\n` + `**Changes:**\n${changes}`;
-									})
-									.join("\n\n") +
-								`\n\n💡 **Tip:** Use this to track who made changes and when for audit purposes.`,
-						},
-					],
+							text: JSON.stringify(result, null, 2)
+						}
+					]
 				};
 			} catch (error) {
 				return {
 					content: [
 						{
 							type: "text",
-							text: `❌ **Cannot get history for test case ${case_id}**\n\n` + `Error: ${error instanceof Error ? error.message : "Unknown error"}\n\n` + `The test case may not exist or you may not have permission to view it.`,
-						},
-					],
+							text: JSON.stringify({
+								error: error instanceof Error ? error.message : "Unknown error",
+								case_id,
+								details: "Failed to get test case history"
+							}, null, 2)
+						}
+					]
 				};
 			}
 		}
@@ -139,36 +161,37 @@ export function registerSearchTools(
 		},
 		async () => {
 			try {
-				const [caseTypes, priorities, caseFields] = await Promise.all([clients.caseTypes.getCaseTypes(), clients.priorities.getPriorities(), clients.caseFields.getCaseFields()]);
+				const [caseTypes, priorities, caseFields] = await Promise.all([
+					clients.caseTypes.getCaseTypes(),
+					clients.priorities.getPriorities(),
+					clients.caseFields.getCaseFields()
+				]);
+
+				const result = {
+					case_types: caseTypes,
+					priorities: priorities,
+					custom_fields: caseFields
+				};
 
 				return {
 					content: [
 						{
 							type: "text",
-							text:
-								`# 📊 TestRail Metadata\n\n` +
-								`## Case Types\n` +
-								caseTypes.map((type: any) => `- **${type.name}** (ID: ${type.id}): ${type.is_default ? "✅ Default" : ""}`).join("\n") +
-								`\n\n## Priorities\n` +
-								priorities.map((priority: any) => `- **${priority.name}** (ID: ${priority.id}): ${priority.is_default ? "✅ Default" : ""}`).join("\n") +
-								`\n\n## Custom Fields\n` +
-								caseFields
-									.slice(0, 10)
-									.map((field: any) => `- **${field.label}** (${field.name}): ${field.type_id === 1 ? "String" : field.type_id === 2 ? "Integer" : field.type_id === 3 ? "Text" : "Other"}`)
-									.join("\n") +
-								`${caseFields.length > 10 ? `\n... and ${caseFields.length - 10} more fields` : ""}` +
-								`\n\n💡 **Usage:** Use these IDs when creating test cases to ensure compatibility.`,
-						},
-					],
+							text: JSON.stringify(result, null, 2)
+						}
+					]
 				};
 			} catch (error) {
 				return {
 					content: [
 						{
 							type: "text",
-							text: `❌ **Cannot retrieve metadata**\n\n` + `Error: ${error instanceof Error ? error.message : "Unknown error"}\n\n` + `You may not have permission to access this information.`,
-						},
-					],
+							text: JSON.stringify({
+								error: error instanceof Error ? error.message : "Unknown error",
+								details: "Failed to retrieve metadata"
+							}, null, 2)
+						}
+					]
 				};
 			}
 		}
@@ -186,22 +209,29 @@ export function registerSearchTools(
 			try {
 				const statuses = await clients.statuses.getStatuses();
 
+				const result = {
+					test_statuses: statuses
+				};
+
 				return {
 					content: [
 						{
 							type: "text",
-							text: `# 📊 Test Result Statuses\n\n` + statuses.map((status: any) => `- **${status.name}** (ID: ${status.id}): ${status.label}\n` + `  Color: ${status.color_dark || status.color_medium} | ${status.is_system ? "🔒 System" : "👤 Custom"} | ${status.is_final ? "🏁 Final" : "🔄 In Progress"}`).join("\n") + `\n\n💡 **Usage:** Use these status IDs when updating test results during execution.`,
-						},
-					],
+							text: JSON.stringify(result, null, 2)
+						}
+					]
 				};
 			} catch (error) {
 				return {
 					content: [
 						{
 							type: "text",
-							text: `❌ **Cannot retrieve test statuses**\n\n` + `Error: ${error instanceof Error ? error.message : "Unknown error"}\n\n` + `You may not have permission to access this information.`,
-						},
-					],
+							text: JSON.stringify({
+								error: error instanceof Error ? error.message : "Unknown error",
+								details: "Failed to retrieve test statuses"
+							}, null, 2)
+						}
+					]
 				};
 			}
 		}

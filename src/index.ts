@@ -1,14 +1,30 @@
 #!/usr/bin/env node
 
-import dotenv from "dotenv";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { registerTools } from "./tools/index.js";
-import { TestRailCasesAPI, TestRailPlansAPI, TestRailLabelsAPI, TestRailProjectsAPI, TestRailMilestonesAPI, TestRailSectionsAPI, TestRailSuitesAPI, TestRailPrioritiesAPI, TestRailCaseFieldsAPI, TestRailCaseTypesAPI, TestRailStatusesAPI } from "./api/index.js";
-
-// Load environment variables from .env file (if exists)
-dotenv.config();
+import { 
+	TestRailCasesAPI, 
+	TestRailPlansAPI, 
+	TestRailLabelsAPI, 
+	TestRailProjectsAPI, 
+	TestRailMilestonesAPI, 
+	TestRailSectionsAPI, 
+	TestRailSuitesAPI, 
+	TestRailPrioritiesAPI, 
+	TestRailCaseFieldsAPI, 
+	TestRailCaseTypesAPI, 
+	TestRailStatusesAPI,
+	TestRailConfigAPI,
+	TestRailReportsAPI,
+	TestRailResultsAPI,
+	TestRailRunsAPI,
+	TestRailSharedStepsAPI,
+	TestRailTemplatesAPI,
+	TestRailTestsAPI,
+	TestRailVariablesAPI
+} from "./api/index.js";
 
 /**
  * TestRail MCP Server
@@ -51,7 +67,7 @@ function validateConfig() {
 			console.error("  - TESTRAIL_URL: Your TestRail instance URL");
 			console.error("  - TESTRAIL_USER: Your TestRail username/email");
 			console.error("  - TESTRAIL_API_KEY: Your TestRail API key");
-			console.error("\n💡 Get your API key from TestRail: My Settings > API Keys");
+			console.error("\n Get your API key from TestRail: My Settings > API Keys");
 		} else {
 			console.error("❌ Configuration error:", error);
 		}
@@ -66,27 +82,35 @@ async function main() {
 	// Validate configuration
 	const config = validateConfig();
 
-	// Mapeia para o tipo esperado pelos clientes
+	// Map to the type expected by the clients
 	const testRailConfig = {
 		baseUrl: config.TESTRAIL_URL,
 		username: config.TESTRAIL_USER,
 		apiKey: config.TESTRAIL_API_KEY,
 	};
 
-	// Inicializa os clientes splitados
-	const testRailClients = {
-		cases: new TestRailCasesAPI(testRailConfig),
-		labels: new TestRailLabelsAPI(testRailConfig),
-		projects: new TestRailProjectsAPI(testRailConfig),
-		milestones: new TestRailMilestonesAPI(testRailConfig),
-		plans: new TestRailPlansAPI(testRailConfig),
-		sections: new TestRailSectionsAPI(testRailConfig),
-		suites: new TestRailSuitesAPI(testRailConfig),
-		priorities: new TestRailPrioritiesAPI(testRailConfig),
-		caseFields: new TestRailCaseFieldsAPI(testRailConfig),
-		caseTypes: new TestRailCaseTypesAPI(testRailConfig),
-		statuses: new TestRailStatusesAPI(testRailConfig),
-	};
+	// Initialize the split clients
+	 const testRailClients = {
+		 cases: new TestRailCasesAPI(testRailConfig),
+		 labels: new TestRailLabelsAPI(testRailConfig),
+		 projects: new TestRailProjectsAPI(testRailConfig),
+		 milestones: new TestRailMilestonesAPI(testRailConfig),
+		 plans: new TestRailPlansAPI(testRailConfig),
+		 sections: new TestRailSectionsAPI(testRailConfig),
+		 suites: new TestRailSuitesAPI(testRailConfig),
+		 priorities: new TestRailPrioritiesAPI(testRailConfig),
+		 caseFields: new TestRailCaseFieldsAPI(testRailConfig),
+		 caseTypes: new TestRailCaseTypesAPI(testRailConfig),
+		 statuses: new TestRailStatusesAPI(testRailConfig),
+		 configs: new TestRailConfigAPI(testRailConfig),
+		 reports: new TestRailReportsAPI(testRailConfig),
+		 results: new TestRailResultsAPI(testRailConfig),
+		 runs: new TestRailRunsAPI(testRailConfig),
+		 sharedSteps: new TestRailSharedStepsAPI(testRailConfig),
+		 templates: new TestRailTemplatesAPI(testRailConfig),
+		 tests: new TestRailTestsAPI(testRailConfig),
+		 variables: new TestRailVariablesAPI(testRailConfig),
+	 };
 
 	// Create MCP server instance
 	const server = new McpServer({
@@ -97,7 +121,7 @@ async function main() {
 		},
 	});
 
-	// Register all tools (agora recebe todos os clientes)
+	// Register all tools (now receives all clients)
 	registerTools(server, testRailClients);
 
 	// Setup transport and start server

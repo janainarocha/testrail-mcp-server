@@ -79,3 +79,40 @@ export interface Priority {
 	short_name?: string;
 	is_default?: boolean;
 }
+
+export interface Template {
+	id: number;
+	name: string;
+	is_default: boolean;
+}
+
+export interface Test {
+	id: number;
+	assignedto_id?: number;
+	case_id: number;
+	estimate?: string;
+	estimate_forecast?: string;
+	milestone_id?: number;
+	priority_id?: number;
+	refs?: string;
+	run_id: number;
+	status_id: number;
+	title: string;
+	type_id?: number;
+	labels?: Array<{
+		id: number;
+		title: string;
+	}>;
+	custom_expected?: string;
+	custom_preconds?: string;
+	custom_steps_separated?: Array<{
+		content: string;
+		expected: string;
+	}>;
+	[key: string]: any; // For additional custom fields
+}
+
+export interface Variable {
+	id: number;
+	name: string;
+}

@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 export interface TestRailConfig {
 	baseUrl: string;
 	username: string;
@@ -22,28 +20,35 @@ export class TestRailBase {
 			"Content-Type": "application/json",
 			...options.headers,
 		};
+		
 		try {
 			const response = await fetch(url, {
 				...options,
 				headers,
 			});
+			
 			if (!response.ok) {
 				const errorText = await response.text();
 				throw new Error(`TestRail API error (${response.status}): ${errorText}`);
 			}
+			
 			if (endpoint.startsWith("delete_")) {
 				return undefined as T;
 			}
+			
 			const contentLength = response.headers.get("content-length");
 			if (contentLength === "0" || contentLength === null) {
 				return undefined as T;
 			}
+			
 			const text = await response.text();
 			if (!text.trim()) {
 				return undefined as T;
 			}
+			
 			try {
-				return JSON.parse(text) as T;
+				const result = JSON.parse(text) as T;
+				return result;
 			} catch (parseError) {
 				if (text.trim() === "") {
 					return undefined as T;

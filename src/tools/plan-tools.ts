@@ -9,6 +9,45 @@ import { z } from "zod";
 
 export function registerPlanTools(server: McpServer, clients: { plans: TestRailPlansAPI }) {
 	/**
+	 * Add a new test plan entry (add a new test run/suite to a plan)
+	 */
+	server.registerTool(
+		"testrail_add_plan_entry",
+		{
+			description: "Adds a new test plan entry (test run/suite) to a test plan.",
+			inputSchema: {
+				plan_id: z.number().positive().describe("The ID of the plan the test runs should be added to."),
+				suite_id: z.number().positive().describe("The ID of the test suite for the test run(s)."),
+				name: z.string().optional().describe("The name of the test run(s)."),
+				description: z.string().optional().describe("The description of the test plan entry."),
+				assignedto_id: z.number().optional().describe("The ID of the user the test run should be assigned to."),
+				start_on: z.number().optional().describe("The start date of a test plan as UNIX timestamp."),
+				due_on: z.number().optional().describe("The end date of a test plan as UNIX timestamp."),
+				include_all: z.boolean().optional().describe("True for including all test cases of the test suite and false for a custom case selection."),
+				case_ids: z.array(z.number()).optional().describe("An array of case IDs for the custom case selection (Required if include_all is false)."),
+				refs: z.string().optional().describe("A comma-separated list of references/requirements."),
+				runs: z.array(z.any()).optional().describe("An array of test runs."),
+			},
+		},
+		async ({ plan_id, ...data }) => {
+			try {
+				const entry = await clients.plans.addPlanEntry(plan_id, data);
+				return {
+					content: [{ type: "text", text: JSON.stringify(entry, null, 2) }],
+				};
+			} catch (error: any) {
+				return {
+					content: [
+						{
+							type: "text",
+							text: JSON.stringify({ error: error.message || "Unknown error", details: "Failed to add plan entry" }, null, 2),
+						},
+					],
+				};
+			}
+		}
+	);
+	/**
 	 * Get test plan details by ID
 	 */
 	server.registerTool(
