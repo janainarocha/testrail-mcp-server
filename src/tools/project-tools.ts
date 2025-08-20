@@ -12,7 +12,7 @@ export function registerProjectTools(server: McpServer, clients: any) {
 		"testrail_list_projects",
 		{
 			description: "Get a list of all TestRail projects accessible to the authenticated user",
-			inputSchema: {}
+			inputSchema: {},
 		},
 		async () => {
 			try {
@@ -23,21 +23,25 @@ export function registerProjectTools(server: McpServer, clients: any) {
 					content: [
 						{
 							type: "text",
-							text: JSON.stringify(projects, null, 2)
-						}
-					]
+							text: JSON.stringify(projects, null, 2),
+						},
+					],
 				};
 			} catch (error) {
 				return {
 					content: [
 						{
 							type: "text",
-							text: JSON.stringify({ 
-								error: error instanceof Error ? error.message : String(error),
-								details: "Failed to fetch projects"
-							}, null, 2)
-						}
-					]
+							text: JSON.stringify(
+								{
+									error: error instanceof Error ? error.message : String(error),
+									details: "Failed to fetch projects",
+								},
+								null,
+								2
+							),
+						},
+					],
 				};
 			}
 		}
@@ -51,39 +55,42 @@ export function registerProjectTools(server: McpServer, clients: any) {
 		{
 			description: "Get detailed information about a specific TestRail project including its test suites",
 			inputSchema: {
-				project_id: z.number().describe("The ID of the project to retrieve")
-			}
+				project_id: z.number().describe("The ID of the project to retrieve"),
+			},
 		},
 		async ({ project_id }) => {
 			try {
 				const project = await clients.projects.getProject(project_id);
 				const suitesResponse = await clients.suites.getSuites(project_id);
-				const suitesArray = Array.isArray(suitesResponse) ? suitesResponse : [];
-
+				const suitesArray = Array.isArray(suitesResponse.suites) ? suitesResponse.suites : [];
 				const result = {
 					project: project,
-					suites: suitesArray
+					suites: suitesArray,
 				};
 
 				return {
 					content: [
 						{
 							type: "text",
-							text: JSON.stringify(result, null, 2)
-						}
-					]
+							text: JSON.stringify(result, null, 2),
+						},
+					],
 				};
 			} catch (error) {
 				return {
 					content: [
 						{
 							type: "text",
-							text: JSON.stringify({ 
-								error: error instanceof Error ? error.message : String(error),
-								details: "Failed to get project"
-							}, null, 2)
-						}
-					]
+							text: JSON.stringify(
+								{
+									error: error instanceof Error ? error.message : String(error),
+									details: "Failed to get project",
+								},
+								null,
+								2
+							),
+						},
+					],
 				};
 			}
 		}
@@ -98,8 +105,8 @@ export function registerProjectTools(server: McpServer, clients: any) {
 			description: "Get all sections in a TestRail test suite",
 			inputSchema: {
 				project_id: z.number().describe("The ID of the project"),
-				suite_id: z.number().describe("The ID of the suite to get sections from")
-			}
+				suite_id: z.number().describe("The ID of the suite to get sections from"),
+			},
 		},
 		async ({ project_id, suite_id }) => {
 			try {
@@ -109,21 +116,25 @@ export function registerProjectTools(server: McpServer, clients: any) {
 					content: [
 						{
 							type: "text",
-							text: JSON.stringify(sections, null, 2)
-						}
-					]
+							text: JSON.stringify(sections, null, 2),
+						},
+					],
 				};
 			} catch (error) {
 				return {
 					content: [
 						{
 							type: "text",
-							text: JSON.stringify({ 
-								error: error instanceof Error ? error.message : String(error),
-								details: "Failed to get sections"
-							}, null, 2)
-						}
-					]
+							text: JSON.stringify(
+								{
+									error: error instanceof Error ? error.message : String(error),
+									details: "Failed to get sections",
+								},
+								null,
+								2
+							),
+						},
+					],
 				};
 			}
 		}
@@ -136,7 +147,7 @@ export function registerProjectTools(server: McpServer, clients: any) {
 		"testrail_get_priorities",
 		{
 			description: "📊 Get all available test case priorities from TestRail with their IDs and names",
-			inputSchema: {}
+			inputSchema: {},
 		},
 		async () => {
 			try {
@@ -146,21 +157,25 @@ export function registerProjectTools(server: McpServer, clients: any) {
 					content: [
 						{
 							type: "text",
-							text: JSON.stringify(priorities, null, 2)
-						}
-					]
+							text: JSON.stringify(priorities, null, 2),
+						},
+					],
 				};
 			} catch (error) {
 				return {
 					content: [
 						{
 							type: "text",
-							text: JSON.stringify({ 
-								error: error instanceof Error ? error.message : String(error),
-								details: "Failed to get priorities"
-							}, null, 2)
-						}
-					]
+							text: JSON.stringify(
+								{
+									error: error instanceof Error ? error.message : String(error),
+									details: "Failed to get priorities",
+								},
+								null,
+								2
+							),
+						},
+					],
 				};
 			}
 		}
