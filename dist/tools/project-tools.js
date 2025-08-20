@@ -143,39 +143,5 @@ export function registerProjectTools(server, clients) {
             };
         }
     });
-    /**
-     * Get templates
-     */
-    server.registerTool("testrail_get_templates", {
-        description: "📋 Get available templates for a project - understand template options for better test case creation",
-        inputSchema: {
-            project_id: z.number().describe("Project ID to get templates for")
-        }
-    }, async ({ project_id }) => {
-        try {
-            const templates = await clients.projects.getTemplates(project_id);
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify(templates, null, 2)
-                    }
-                ]
-            };
-        }
-        catch (error) {
-            return {
-                content: [
-                    {
-                        type: "text",
-                        text: JSON.stringify({
-                            error: error instanceof Error ? error.message : String(error),
-                            details: "Failed to get templates"
-                        }, null, 2)
-                    }
-                ]
-            };
-        }
-    });
 }
 //# sourceMappingURL=project-tools.js.map
