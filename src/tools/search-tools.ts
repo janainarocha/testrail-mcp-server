@@ -25,7 +25,7 @@ export function registerSearchTools(
 			description: "🔍 Advanced search for test cases with multiple filters (priority, type, date, text search)",
 			inputSchema: {
 				project_id: z.number().describe("Project ID to search in"),
-				suite_id: z.number().optional().describe("Suite ID to filter by"),
+				suite_id: z.number().describe("Suite ID to filter by (required for multi-suite projects)"),
 				section_id: z.number().optional().describe("Section ID to filter by"),
 				filter_text: z.string().optional().describe("Text to search in test case titles"),
 				priority_ids: z.array(z.number()).optional().describe("Priority IDs to filter by (1=Low, 2=Medium, 3=High, 4=Critical)"),

@@ -48,10 +48,7 @@ export function registerProjectTools(server, clients) {
         try {
             const project = await clients.projects.getProject(project_id);
             const suitesResponse = await clients.suites.getSuites(project_id);
-            console.log("Project:", project);
-            console.log("Suites Response:", suitesResponse);
             const suitesArray = Array.isArray(suitesResponse.suites) ? suitesResponse.suites : [];
-            console.log("Suites:", suitesArray);
             const result = {
                 project: project,
                 suites: suitesArray,

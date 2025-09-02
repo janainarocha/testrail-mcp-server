@@ -15,17 +15,16 @@ export function registerBulkTools(server, clients) {
             section_id: z.number().optional().describe("Section ID to export (all sections if not specified)"),
             include_steps: z.boolean().optional().describe("Include detailed test steps (default: true)"),
             include_history: z.boolean().optional().describe("Include change history (default: false)"),
-            format: z.enum(["json", "csv_summary"]).optional().describe("Export format (default: json)")
-        }
+            format: z.enum(["json", "csv_summary"]).optional().describe("Export format (default: json)"),
+        },
     }, async ({ project_id, suite_id, section_id, include_steps = true, include_history = false, format = "json" }) => {
         try {
             // Get basic case data
-            const cases = await clients.cases.getCases(project_id, suite_id, {
-                sectionId: section_id
-            });
+            const cases = await clients.cases.getCases(project_id, suite_id, section_id);
             if (!Array.isArray(cases) || cases.length === 0) {
                 return {
-                    content: [{
+                    content: [
+                        {
                             type: "text",
                             text: JSON.stringify({
                                 message: "No test cases found for the specified criteria",
@@ -33,10 +32,11 @@ export function registerBulkTools(server, clients) {
                                     project_id,
                                     suite_id,
                                     section_id,
-                                    cases_found: 0
-                                }
-                            }, null, 2)
-                        }]
+                                    cases_found: 0,
+                                },
+                            }, null, 2),
+                        },
+                    ],
                 };
             }
             // Enrich with additional data if requested
@@ -74,47 +74,53 @@ export function registerBulkTools(server, clients) {
                     total_cases: enrichedCases.length,
                     include_steps,
                     include_history,
-                    format
+                    format,
                 },
-                test_cases: enrichedCases
+                test_cases: enrichedCases,
             };
             if (format === "csv_summary") {
                 // Convert to CSV-like summary
-                const csvData = enrichedCases.map(tc => ({
+                const csvData = enrichedCases.map((tc) => ({
                     id: tc.id,
                     title: tc.title,
                     section_id: tc.section_id,
                     priority: tc.priority_id,
                     type: tc.type_id,
                     created_on: new Date(tc.created_on * 1000).toISOString(),
-                    updated_on: new Date(tc.updated_on * 1000).toISOString()
+                    updated_on: new Date(tc.updated_on * 1000).toISOString(),
                 }));
                 return {
-                    content: [{
+                    content: [
+                        {
                             type: "text",
                             text: JSON.stringify({
                                 ...exportData,
-                                csv_summary: csvData
-                            }, null, 2)
-                        }]
+                                csv_summary: csvData,
+                            }, null, 2),
+                        },
+                    ],
                 };
             }
             return {
-                content: [{
+                content: [
+                    {
                         type: "text",
-                        text: JSON.stringify(exportData, null, 2)
-                    }]
+                        text: JSON.stringify(exportData, null, 2),
+                    },
+                ],
             };
         }
         catch (error) {
             return {
-                content: [{
+                content: [
+                    {
                         type: "text",
                         text: JSON.stringify({
                             error: error instanceof Error ? error.message : String(error),
-                            details: "Failed to export test cases"
-                        }, null, 2)
-                    }]
+                            details: "Failed to export test cases",
+                        }, null, 2),
+                    },
+                ],
             };
         }
     });
