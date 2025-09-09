@@ -16,6 +16,7 @@ export * from "./testrail-reports.js";
 export * from "./testrail-results.js";
 export * from "./testrail-runs.js";
 export * from "./testrail-sharedSteps.js";
+export * from "./testrail-attachments.js";
 
 // Export APIs explicitly to avoid naming conflicts
 export { TestRailTemplatesAPI } from "./testrail-templates.js";

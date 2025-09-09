@@ -20,6 +20,7 @@ import { registerTestTools } from "./tests-tools.js";
 import { registerVariableTools } from "./variables-tools.js";
 import { registerHealthTools } from "./health-tools.js";
 import { registerBulkTools } from "./bulk-tools.js";
+import { registerAttachmentTools } from "./attachments-tools.js";
 
 /**
  * Register all MCP tools for TestRail operations
@@ -46,6 +47,7 @@ export function registerTools(server: McpServer, clients: any) {
 	registerVariableTools(server, clients);
 	registerHealthTools(server, clients);
 	registerBulkTools(server, clients);
+	registerAttachmentTools(server, clients.attachments);
 
 	console.log("✅ All TestRail MCP tools registered successfully");
 }

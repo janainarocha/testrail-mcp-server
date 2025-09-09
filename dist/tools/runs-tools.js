@@ -10,7 +10,7 @@ export function registerRunTools(server, clients) {
     server.registerTool("testrail_get_run", {
         description: "Get a specific test run by ID with complete details including test counts and configuration",
         inputSchema: {
-            run_id: z.number().positive().describe("The ID of the test run")
+            run_id: z.number().positive().describe("The ID of the test run"),
         },
     }, async ({ run_id }) => {
         try {
@@ -19,9 +19,9 @@ export function registerRunTools(server, clients) {
                 content: [
                     {
                         type: "text",
-                        text: JSON.stringify(run, null, 2)
-                    }
-                ]
+                        text: JSON.stringify(run, null, 2),
+                    },
+                ],
             };
         }
         catch (error) {
@@ -32,10 +32,10 @@ export function registerRunTools(server, clients) {
                         text: JSON.stringify({
                             error: error instanceof Error ? error.message : "Unknown error",
                             run_id,
-                            details: "Failed to get test run"
-                        }, null, 2)
-                    }
-                ]
+                            details: "Failed to get test run",
+                        }, null, 2),
+                    },
+                ],
             };
         }
     });
@@ -54,7 +54,7 @@ export function registerRunTools(server, clients) {
             offset: z.number().min(0).optional().describe("The number of records to skip"),
             milestone_id: z.array(z.number()).optional().describe("Array of milestone IDs to filter by"),
             refs_filter: z.string().optional().describe("A single Reference ID (e.g. TR-a, 4291, etc.)"),
-            suite_id: z.array(z.number()).optional().describe("Array of test suite IDs to filter by")
+            suite_id: z.array(z.number()).optional().describe("Array of test suite IDs to filter by"),
         },
     }, async ({ project_id, ...options }) => {
         try {
@@ -63,9 +63,9 @@ export function registerRunTools(server, clients) {
                 content: [
                     {
                         type: "text",
-                        text: JSON.stringify(runs, null, 2)
-                    }
-                ]
+                        text: JSON.stringify(runs, null, 2),
+                    },
+                ],
             };
         }
         catch (error) {
@@ -76,10 +76,10 @@ export function registerRunTools(server, clients) {
                         text: JSON.stringify({
                             error: error instanceof Error ? error.message : "Unknown error",
                             project_id,
-                            details: "Failed to get test runs"
-                        }, null, 2)
-                    }
-                ]
+                            details: "Failed to get test runs",
+                        }, null, 2),
+                    },
+                ],
             };
         }
     });
@@ -99,7 +99,7 @@ export function registerRunTools(server, clients) {
             case_ids: z.array(z.number().positive()).optional().describe("Array of case IDs for custom case selection (when include_all is false)"),
             refs: z.string().optional().describe("Comma-separated list of references/requirements - include Jira US/ticket numbers (e.g., 'AEL-1156, REQ-123')"),
             start_on: z.number().optional().describe("The start date of the test run (UNIX timestamp)"),
-            due_on: z.number().optional().describe("The end date of the test run (UNIX timestamp)")
+            due_on: z.number().optional().describe("The end date of the test run (UNIX timestamp)"),
         },
     }, async ({ project_id, ...data }) => {
         try {
@@ -108,9 +108,9 @@ export function registerRunTools(server, clients) {
                 content: [
                     {
                         type: "text",
-                        text: JSON.stringify(run, null, 2)
-                    }
-                ]
+                        text: JSON.stringify(run, null, 2),
+                    },
+                ],
             };
         }
         catch (error) {
@@ -121,10 +121,10 @@ export function registerRunTools(server, clients) {
                         text: JSON.stringify({
                             error: error instanceof Error ? error.message : "Unknown error",
                             project_id,
-                            details: "Failed to create test run"
-                        }, null, 2)
-                    }
-                ]
+                            details: "Failed to create test run",
+                        }, null, 2),
+                    },
+                ],
             };
         }
     });
@@ -142,7 +142,7 @@ export function registerRunTools(server, clients) {
             case_ids: z.array(z.number().positive()).optional().describe("Array of case IDs for custom case selection (when include_all is false)"),
             refs: z.string().optional().describe("Comma-separated list of references/requirements - include Jira US/ticket numbers (e.g., 'AEL-1156, REQ-123')"),
             start_on: z.number().optional().describe("The new start date of the test run (UNIX timestamp)"),
-            due_on: z.number().optional().describe("The new end date of the test run (UNIX timestamp)")
+            due_on: z.number().optional().describe("The new end date of the test run (UNIX timestamp)"),
         },
     }, async ({ run_id, ...data }) => {
         try {
@@ -151,9 +151,9 @@ export function registerRunTools(server, clients) {
                 content: [
                     {
                         type: "text",
-                        text: JSON.stringify(run, null, 2)
-                    }
-                ]
+                        text: JSON.stringify(run, null, 2),
+                    },
+                ],
             };
         }
         catch (error) {
@@ -164,10 +164,10 @@ export function registerRunTools(server, clients) {
                         text: JSON.stringify({
                             error: error instanceof Error ? error.message : "Unknown error",
                             run_id,
-                            details: "Failed to update test run"
-                        }, null, 2)
-                    }
-                ]
+                            details: "Failed to update test run",
+                        }, null, 2),
+                    },
+                ],
             };
         }
     });
@@ -178,7 +178,7 @@ export function registerRunTools(server, clients) {
         description: "Close an existing test run and archive its tests & results - WARNING: This action cannot be undone!",
         inputSchema: {
             run_id: z.number().positive().describe("The ID of the test run to close"),
-            confirmation: z.literal("I_UNDERSTAND_THIS_CANNOT_BE_UNDONE").describe("Confirmation that you understand this action is irreversible")
+            confirmation: z.literal("I_UNDERSTAND_THIS_CANNOT_BE_UNDONE").describe("Confirmation that you understand this action is irreversible"),
         },
     }, async ({ run_id, confirmation }) => {
         try {
@@ -190,9 +190,9 @@ export function registerRunTools(server, clients) {
                 content: [
                     {
                         type: "text",
-                        text: JSON.stringify(run, null, 2)
-                    }
-                ]
+                        text: JSON.stringify(run, null, 2),
+                    },
+                ],
             };
         }
         catch (error) {
@@ -203,10 +203,10 @@ export function registerRunTools(server, clients) {
                         text: JSON.stringify({
                             error: error instanceof Error ? error.message : "Unknown error",
                             run_id,
-                            details: "Failed to close test run"
-                        }, null, 2)
-                    }
-                ]
+                            details: "Failed to close test run",
+                        }, null, 2),
+                    },
+                ],
             };
         }
     });

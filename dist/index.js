@@ -4,6 +4,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { registerTools } from "./tools/index.js";
 import { TestRailCasesAPI, TestRailPlansAPI, TestRailLabelsAPI, TestRailProjectsAPI, TestRailMilestonesAPI, TestRailSectionsAPI, TestRailSuitesAPI, TestRailPrioritiesAPI, TestRailCaseFieldsAPI, TestRailCaseTypesAPI, TestRailStatusesAPI, TestRailConfigAPI, TestRailReportsAPI, TestRailResultsAPI, TestRailRunsAPI, TestRailSharedStepsAPI, TestRailTemplatesAPI, TestRailTestsAPI, TestRailVariablesAPI } from "./api/index.js";
+import { TestRailAttachments } from "./api/testrail-attachments.js";
 /**
  * TestRail MCP Server
  *
@@ -85,6 +86,7 @@ async function main() {
         templates: new TestRailTemplatesAPI(testRailConfig),
         tests: new TestRailTestsAPI(testRailConfig),
         variables: new TestRailVariablesAPI(testRailConfig),
+        attachments: new TestRailAttachments(testRailConfig),
     };
     // Create MCP server instance
     const server = new McpServer({

@@ -16,6 +16,7 @@ export * from "./testrail-reports.js";
 export * from "./testrail-results.js";
 export * from "./testrail-runs.js";
 export * from "./testrail-sharedSteps.js";
+export * from "./testrail-attachments.js";
 export { TestRailTemplatesAPI } from "./testrail-templates.js";
 export { TestRailTestsAPI } from "./testrail-tests.js";
 export { TestRailVariablesAPI } from "./testrail-variables.js";

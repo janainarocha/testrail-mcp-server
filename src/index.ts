@@ -25,6 +25,7 @@ import {
 	TestRailTestsAPI,
 	TestRailVariablesAPI
 } from "./api/index.js";
+import { TestRailAttachments } from "./api/testrail-attachments.js";
 
 /**
  * TestRail MCP Server
@@ -110,6 +111,7 @@ async function main() {
 		 templates: new TestRailTemplatesAPI(testRailConfig),
 		 tests: new TestRailTestsAPI(testRailConfig),
 		 variables: new TestRailVariablesAPI(testRailConfig),
+		 attachments: new TestRailAttachments(testRailConfig),
 	 };
 
 	// Create MCP server instance
