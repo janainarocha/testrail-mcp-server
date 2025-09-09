@@ -97,7 +97,7 @@ export function registerRunTools(server, clients) {
             assignedto_id: z.number().positive().optional().describe("The ID of the user the test run should be assigned to"),
             include_all: z.boolean().optional().describe("True to include all test cases, false for custom selection (default: true)"),
             case_ids: z.array(z.number().positive()).optional().describe("Array of case IDs for custom case selection (when include_all is false)"),
-            refs: z.string().optional().describe("Comma-separated list of references/requirements"),
+            refs: z.string().optional().describe("Comma-separated list of references/requirements - include Jira US/ticket numbers (e.g., 'AEL-1156, REQ-123')"),
             start_on: z.number().optional().describe("The start date of the test run (UNIX timestamp)"),
             due_on: z.number().optional().describe("The end date of the test run (UNIX timestamp)")
         },
@@ -140,7 +140,7 @@ export function registerRunTools(server, clients) {
             milestone_id: z.number().positive().optional().describe("The new milestone ID to link to the test run"),
             include_all: z.boolean().optional().describe("True to include all test cases, false for custom selection"),
             case_ids: z.array(z.number().positive()).optional().describe("Array of case IDs for custom case selection (when include_all is false)"),
-            refs: z.string().optional().describe("Comma-separated list of references/requirements"),
+            refs: z.string().optional().describe("Comma-separated list of references/requirements - include Jira US/ticket numbers (e.g., 'AEL-1156, REQ-123')"),
             start_on: z.number().optional().describe("The new start date of the test run (UNIX timestamp)"),
             due_on: z.number().optional().describe("The new end date of the test run (UNIX timestamp)")
         },

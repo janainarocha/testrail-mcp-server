@@ -25,7 +25,7 @@ export function registerPlanTools(server: McpServer, clients: { plans: TestRailP
 				due_on: z.number().optional().describe("The end date of a test plan as UNIX timestamp."),
 				include_all: z.boolean().optional().describe("True for including all test cases of the test suite and false for a custom case selection."),
 				case_ids: z.array(z.number()).optional().describe("An array of case IDs for the custom case selection (Required if include_all is false)."),
-				refs: z.string().optional().describe("A comma-separated list of references/requirements."),
+				refs: z.string().optional().describe("A comma-separated list of references/requirements - include Jira US/ticket numbers (e.g., 'AEL-1156, REQ-123')."),
 				runs: z.array(z.any()).optional().describe("An array of test runs."),
 			},
 		},
@@ -165,7 +165,7 @@ export function registerPlanTools(server: McpServer, clients: { plans: TestRailP
 					)
 					.optional()
 					.describe("An array of objects describing the test runs of the plan."),
-				refs: z.string().optional().describe("A comma-separated list of references/requirements."),
+				refs: z.string().optional().describe("A comma-separated list of references/requirements - include Jira US/ticket numbers (e.g., 'AEL-1156, REQ-123')."),
 			},
 		},
 		async ({ plan_id, entry_id, ...data }) => {
@@ -201,7 +201,7 @@ export function registerPlanTools(server: McpServer, clients: { plans: TestRailP
 				milestone_id: z.number().optional().describe("The ID of the milestone to link to the test plan."),
 				start_on: z.number().optional().describe("The start date of a test plan as UNIX timestamp."),
 				due_on: z.number().optional().describe("The end date of a test plan as UNIX timestamp."),
-				refs: z.string().optional().describe("A comma-separated list of references/requirements."),
+				refs: z.string().optional().describe("A comma-separated list of references/requirements - include Jira US/ticket numbers (e.g., 'AEL-1156, REQ-123')."),
 			},
 		},
 		async ({ plan_id, ...data }) => {
@@ -240,7 +240,7 @@ export function registerPlanTools(server: McpServer, clients: { plans: TestRailP
 				due_on: z.number().optional().describe("The end date of a test plan as UNIX timestamp."),
 				include_all: z.boolean().optional().describe("True for including all test cases of the test suite and false for a custom case selection."),
 				case_ids: z.array(z.number()).optional().describe("An array of case IDs for the custom case selection."),
-				refs: z.string().optional().describe("A string of external requirement IDs, separated by commas."),
+				refs: z.string().optional().describe("A string of external requirement IDs, separated by commas - include Jira US/ticket numbers (e.g., 'AEL-1156, REQ-123')."),
 			},
 		},
 		async ({ plan_id, entry_id, ...data }) => {
@@ -277,7 +277,7 @@ export function registerPlanTools(server: McpServer, clients: { plans: TestRailP
 				due_on: z.number().optional().describe("The end date of a test plan as UNIX timestamp."),
 				include_all: z.boolean().optional().describe("True for including all test cases of the test suite and false for a custom case selection."),
 				case_ids: z.array(z.number()).optional().describe("An array of case IDs for the custom case selection."),
-				refs: z.string().optional().describe("A string of external requirement IDs, separated by commas."),
+				refs: z.string().optional().describe("A string of external requirement IDs, separated by commas - include Jira US/ticket numbers (e.g., 'AEL-1156, REQ-123')."),
 			},
 		},
 		async ({ run_id, ...data }) => {

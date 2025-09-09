@@ -143,14 +143,14 @@ export function registerCaseTools(server: McpServer, clients: { cases: TestRailC
 				priority_id: z.number().positive().optional().describe("The ID of the case priority"),
 				estimate: z.string().optional().describe("The estimate, e.g. '30s' or '1m 45s'"),
 				milestone_id: z.number().positive().optional().describe("The ID of the milestone to link to the test case"),
-				refs: z.string().optional().describe("A comma-separated list of references/requirements"),
+				refs: z.string().optional().describe("A comma-separated list of references/requirements - ALWAYS include the Jira US/ticket number (e.g., 'AEL-1156, REQ-123')"),
 				labels: z
 					.array(z.union([z.number(), z.string()]))
 					.optional()
 					.describe("Array of label IDs or titles"),
 				// Custom fields
 				custom_preconds: z.string().optional().describe("Test preconditions"),
-				custom_steps: z.string().optional().describe("Test steps (plain text)"),
+				custom_steps: z.string().optional().describe("Test steps (plain text) - RECOMMEND using custom_steps_separated instead for better structure"),
 				custom_expected: z.string().optional().describe("Expected result"),
 				custom_steps_separated: z
 					.array(
@@ -161,7 +161,7 @@ export function registerCaseTools(server: McpServer, clients: { cases: TestRailC
 						})
 					)
 					.optional()
-					.describe("Structured test steps"),
+					.describe("Structured test steps - RECOMMENDED over custom_steps for better organization and clarity"),
 				custom_mission: z.string().optional().describe("Mission (for exploratory tests)"),
 				custom_goals: z.string().optional().describe("Goals (for exploratory tests)"),
 			},
@@ -320,14 +320,14 @@ export function registerCaseTools(server: McpServer, clients: { cases: TestRailC
 				priority_id: z.number().positive().optional().describe("The ID of the case priority"),
 				estimate: z.string().optional().describe("The estimate, e.g. '30s' or '1m 45s'"),
 				milestone_id: z.number().positive().optional().describe("The ID of the milestone to link to the test case"),
-				refs: z.string().optional().describe("A comma-separated list of references/requirements"),
+				refs: z.string().optional().describe("A comma-separated list of references/requirements - ALWAYS include the Jira US/ticket number (e.g., 'AEL-1156, REQ-123')"),
 				labels: z
 					.array(z.union([z.number(), z.string()]))
 					.optional()
 					.describe("Array of label IDs or titles"),
 				// Custom fields
 				custom_preconds: z.string().optional().describe("Test preconditions"),
-				custom_steps: z.string().optional().describe("Test steps (plain text)"),
+				custom_steps: z.string().optional().describe("Test steps (plain text) - RECOMMEND using custom_steps_separated instead for better structure"),
 				custom_expected: z.string().optional().describe("Expected result"),
 				custom_steps_separated: z
 					.array(
@@ -338,7 +338,7 @@ export function registerCaseTools(server: McpServer, clients: { cases: TestRailC
 						})
 					)
 					.optional()
-					.describe("Structured test steps"),
+					.describe("Structured test steps - RECOMMENDED over custom_steps for better organization and clarity"),
 				custom_mission: z.string().optional().describe("Mission (for exploratory tests)"),
 				custom_goals: z.string().optional().describe("Goals (for exploratory tests)"),
 			},
@@ -405,7 +405,7 @@ export function registerCaseTools(server: McpServer, clients: { cases: TestRailC
 						type_id: z.number().optional().describe("New case type ID"),
 						estimate: z.string().optional().describe("New time estimate (e.g., '30m', '1h 30m')"),
 						milestone_id: z.number().optional().describe("New milestone ID"),
-						refs: z.string().optional().describe("New references/requirements"),
+						refs: z.string().optional().describe("New references/requirements - INCLUDE Jira US/ticket numbers (e.g., 'AEL-1156, REQ-123')"),
 					})
 					.describe("Fields to update with new values"),
 				confirmation: z.literal("I_HAVE_REVIEWED_THE_CASE_IDS_TO_UPDATE").describe("Confirmation that you have reviewed the case IDs"),
